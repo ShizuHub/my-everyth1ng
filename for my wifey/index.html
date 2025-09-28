@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my everything</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Import handwritten font */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
+        /* Aurora animation */
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            background: linear-gradient(-45deg, #fde6e6, #e6f0ff, #f0e6ff, #e6f9f5);
+            background-size: 400% 400%;
+            animation: aurora 20s ease infinite;
+            overflow: hidden;
+        }
+
+        .font-handwritten {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Floating text animation */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: floatUp 4s ease-out forwards;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-200px) scale(0.5); opacity: 0; }
+        }
+
+        /* Subtle floating image */
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.03); }
+        }
+
+        .animate-subtle-float {
+            animation: subtleFloat 8s ease-in-out infinite;
+        }
+
+        /* Fade in graceful for text */
+        @keyframes fadeInGraceful {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-sentence {
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInGraceful 1.5s ease-out forwards;
+        }
+
+        /* Overlay styling */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.8s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen font-handwritten">
+
+    <!-- Overlay -->
+    <div id="overlay">
+        <div class="text-center p-4">
+            <h1 class="text-3xl text-gray-800">For the one who changed everything...</h1>
+            <p class="text-gray-600 mt-2">Tap to open</p>
+        </div>
+
+        <!-- "Shizu loves you" footer -->
+        <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-gray-800 opacity-50 text-lg">
+            Shizu loves you
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div id="content" class="max-w-xs w-full flex flex-col items-center p-4 text-center opacity-0 transition-opacity duration-1000">
+
+        <img src="Happiness.jpg" 
+             alt="A special moment" 
+             class="rounded-lg w-full mb-6 shadow-2xl ring-4 ring-white/50 animate-subtle-float">
+
+        <p id="message" class="text-gray-900 text-xl leading-tight">
+            I've been thinking about all the things that make you so incredible. I love your personality, how you bring so much light into my life. I love the way your eyes sparkle when you smile. The sound of your laugh is my favorite song. Thank you for caring for me, for everything you do. Honestly, I love every single thing about you. You're my entire world.
+        </p>
+        
+        <p id="final-flourish" class="text-gray-800 text-lg mt-4 opacity-0">
+            My everything.
+        </p>
+
+    </div>
+
+    <!-- Music -->
+    <audio id="loveSong" loop>
+        <source src="Rex.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+        const content = document.getElementById('content');
+        const song = document.getElementById('loveSong');
+        const messageP = document.getElementById('message');
+        const finalFlourish = document.getElementById('final-flourish');
+
+        // Floating words
+        const hearts = ['My love', 'My Everything', 'My Bby'];
+
+        // First tap
+        overlay.addEventListener('click', () => {
+            song.play();
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                content.style.opacity = '1';
+                animateText();
+            }, 800);
+        });
+
+        // Animate sentences
+        function animateText() {
+            const text = messageP.innerText;
+            const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+            messageP.innerHTML = '';
+
+            let totalDelay = 0;
+            sentences.forEach((sentence, index) => {
+                const span = document.createElement('span');
+                span.innerText = sentence;
+                span.className = 'message-sentence';
+                const delay = index * 2.0;
+                span.style.animationDelay = `${delay}s`; 
+                messageP.appendChild(span);
+                totalDelay = delay;
+            });
+
+            setTimeout(() => {
+                finalFlourish.style.transition = 'opacity 2.5s ease-in-out';
+                finalFlourish.style.opacity = '1';
+            }, (totalDelay + 1.5) * 1000);
+        }
+
+        // Floating text effect
+        document.addEventListener('click', function (e) {
+            if (overlay.style.display === 'none') {
+                const heart = document.createElement('div');
+                heart.className = 'heart font-handwritten';
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = e.clientX + 'px';
+                heart.style.top = e.clientY + 'px';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }
+        });
+    </script>
+
+</body>
+</html>
